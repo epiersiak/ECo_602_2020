@@ -1,30 +1,216 @@
----
-title: "index.rmd"
-author: "Emily Piersiak"
-date: "11/23/2020"
-output: html_document
----
-
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
+knitr::opts_chunk$set(warning = FALSE)
+knitr::opts_chunk$set(message = FALSE)
+options(knitr.duplicate.label = TRUE)
 ```
 
-## R Markdown
+Everything above this line is the header.
 
-This is an R Markdown document. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see <http://rmarkdown.rstudio.com>.
 
-When you click the **Knit** button a document will be generated that includes both content as well as the output of any embedded R code chunks within the document. You can embed an R code chunk like this:
+<!-- The following text won't be displayed in your document.  It tells R how to make nicer looking buttons for your tabbed content. -->
 
-```{r cars}
-summary(cars)
+<style type="text/css" rel="stylesheet">
+
+.btn {
+    border-width: 0 0 0 0;
+    font-weight: normal;
+    text-transform: none;
+}
+
+.btn-default {
+    color: #2ecc71;
+    background-color: #ffffff;
+    border-color: #ffffff;
+}
+</style>
+
+
+Use this document as a template to build your final project.
+
+If you've already created the file index.Rmd in your docs folder, you can paste everything below the header into that document.
+
+If you don't yet have an index.Rmd file, save this document as index.Rmd in the docs folder of your main class folder.
+
+Edit this template to fill in your own content.
+
+
+# Introduction
+
+Type a brief introduction here.
+
+
+# Functions 1: Data Structure Functions {.tabset .tabset-pills}
+
+Look at the source code for the final project template, you'll notice the text:
+
+{.tabset .tabset-pills}
+
+This creates tabbed content for all the following sections that are one-level below.
+
+- If you include them on a primary header (one #), all of the subsequent secondary headers will in tabs.
+
+
+
+
+## `c()`
+
+The function `c()` *combines* or *concatenates* its arguments into a vector (a 1-dimensional data structure consisting of 1 or more elements).
+
+- All of the elements must be of the same *type*.
+  - I can't combine character and numeric types in the same call to `c()`
+
+Here's two examples using numeric and character data types:
+
+```{r}
+# Create a vector of numbers:
+num_vec  = c(1, 4, 8, 9, 13)
+
+# Create a vector of characters:
+char_vec = c("a", "fish", "data is cool")
 ```
 
-## Including Plots
+I can show the contents of a vector by typing the name of the vector, or using the `print()` function.
 
-You can also embed plots, for example:
+```{r}
+# Typing the name of the vector into the console prints the contents
+num_vec
 
-```{r pressure, echo=FALSE}
-plot(pressure)
+# The print() function accomplishes the same task:
+print(char_vec)
 ```
 
-Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
+
+## `data.frame()`
+
+The function `data.frame()` creates something called a data frame, or a group of variables. This is useful to use when you import data into R for analysis.
+
+```{r}
+# Create a data frame with three columns:
+data_frame1  = data.frame(1, 2, 3)
+
+```
+
+Data frames are created when the function `read.csv()` is used to bring a csv document into R
+
+## `matrix()`
+
+The function `matrix()` creates a matrix from the input set of values. 
+
+```{r}
+# Create a matrix of the list "list" with 3 rows and 3 columns:
+list = c(1, 2, 3)
+matrix(data = list, nrow = 3, ncol = 3, byrow = TRUE)
+```
+
+The 'nrow' argument defines the number of rows present, while 'ncol' defines the number of columns present. If the 'byrow' argument is TRUE, the matrix fills by rows. If it is FALSE, then the matrix fills by columns.
+
+```{r}
+matrix(data = list, nrow = 3, ncol = 3, byrow = FALSE)
+
+matrix(data = list, nrow = 3, ncol = 3, byrow = TRUE)
+
+```
+
+## `length()`
+
+The `length()` function can be used to find out the length of a vector, list, factor, or other R object with a defined method
+
+```{r}
+# Find the length of "list":
+length_list = c(1, 2, 3, 4, 5, 6, 7, 8, 'a', 'b')
+length(length_list)
+```
+
+## `nrow()`
+The function `nrow()` can be used to find out how many rows are present in the datset.
+```{r}
+# Find the number of rows in R's base dataset "cars"
+nrow(cars)
+```
+
+## `ncol()`
+
+The function `ncol()` can be used to find out how many columns are present in the dataset.
+```{r}
+# Find the number of rows in R's base dataset "cars"
+ncol(cars)
+```
+
+## `dim()`
+
+The function `dim()` can be used to find the dimension of an object. The first part of the result represents rows and the second part represents columns.
+```{r}
+# Find the dimensions of R's base dataset "cars"
+dim(cars)
+```
+
+# Functions 2: Numerical Data Exploration  {.tabset .tabset-pills}
+
+## `summary()`
+
+
+## `mean()`
+
+
+## `sd()`
+ 
+
+
+# Functions 3: Graphical Data Exploration {.tabset .tabset-pills}
+
+## `par()`
+
+
+## `plot()`
+
+
+## `hist()`
+
+
+## `boxplot()`
+
+
+
+# Functions 4: Distribution Functions {.tabset .tabset-pills}
+
+## `dnorm()`
+
+
+## `pnorm()`
+
+
+## `qnorm()`
+
+
+## `dbinom()`
+
+
+## `pbinom()`
+
+
+## `qbinom()`
+
+
+
+# Functions 5: Other Functions {.tabset .tabset-pills}
+
+## `subset()`
+
+
+## `library()`
+
+
+## `require()`
+
+
+## `read.csv()`
+
+
+
+# Part 2: Data Anaylsis {.tabset .tabset-pills}
+
+## `Numerical Exploration`
+
+
+## `Graphical Exploration`
