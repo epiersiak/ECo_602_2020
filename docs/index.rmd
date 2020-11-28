@@ -11,6 +11,7 @@ output:
 knitr::opts_chunk$set(echo = TRUE)
 knitr::opts_chunk$set(warning = FALSE)
 knitr::opts_chunk$set(message = FALSE)
+knitr::opts_chunk$set(fig.width=10, fig.height=8) 
 options(knitr.duplicate.label = TRUE)
 ```
 
@@ -474,6 +475,154 @@ read.csv('delomys.csv')
 # Part 2: Data Anaylsis {.tabset .tabset-pills}
 
 ## `Numerical Exploration`
+Use the summary function to see some summary statistics on body mass and body length from the delomys dataset.
+```{r}
+# Read in the delomys dataset. First, the working directory must be set to a location where the file of interest exists.
+setwd("D:/umass/eco_602_2020/ECo_602_2020/data")
+dat_delomys = read.csv('delomys.csv')
 
+# See the summary statistics from delomys$body_length
+summary(dat_delomys$body_length)
+
+# See the summary statistics from delomys$body_mass
+summary(dat_delomys$body_mass)
+
+# Perform a Shapiro test to determine the normality of body length in the dat_delomys dataset
+shapiro.test(dat_delomys$body_length)
+
+# Perform a Shapiro test to determine the normality of body mass in the dat_delomys dataset
+shapiro.test(dat_delomys$body_mass)
+```
+In a Shapiro test for normality, the null hypothesis is that the data is normally distributed. The alternative hypothesis is that the data is not normally distributed.
+With a p value of less than 0.05, we can safely accept the null hypothesis and assume that the data is normally distributed.
+Both body length (p < 2.2e-16) and mass (p = 4.33e-05) for the delomys dataset are normally distributed.
 
 ## `Graphical Exploration`
+Use a variety of graphs to visually explore the data.
+
+```{r}
+# Create a scatterplot of delomys body mass by body length
+require(dat_delomys)
+plot(dat_delomys$body_mass, dat_delomys$body_length,
+     main = "Scatterplot of Delomys spp. Body Mass by Body Length",
+     xlab = "Body Mass (g)",
+     ylab = "Body Length (mm)")
+
+```
+```{r}
+# Create a histogram of delomys body mass
+require(dat_delomys)
+hist(dat_delomys$body_mass,
+     main = "Histogram of Delomys spp. Body Mass",
+     xlab = "Body Mass (g)",
+     ylab = "Frequency")
+
+```
+```{r}
+# Create a histogram of delomys body length
+require(dat_delomys)
+hist(dat_delomys$body_length,
+     main = "Histogram of Delomys spp. Body Length",
+     xlab = "Body Length (mm)",
+     ylab = "Frequency")
+
+```
+```{r}
+# Create a conditional boxplot of body mass, conditioned on species
+View(dat_delomys)
+require(dat_delomys)
+boxplot(body_mass~binomial, data = dat_delomys,
+        main = "Conditional Boxplot of Delomys spp. Body Mass by Species",
+        ylab = "Body Mass (g)",
+        xlab = "Species")
+
+```
+```{r}
+# Create a conditional boxplot of body mass, conditioned on sex
+View(dat_delomys)
+require(dat_delomys)
+boxplot(body_mass~sex, data = dat_delomys,
+        main = "Conditional Boxplot of Delomys spp. Body Mass by Sex",
+        ylab = "Body Mass (g)",
+        xlab = "Sex",
+        names = c("Female", "Male"))
+```
+```{r}
+# Create a conditional boxplot of body mass, conditioned on sex and species
+View(dat_delomys)
+require(dat_delomys)
+boxplot(body_mass~sex*binomial, data = dat_delomys, 
+        main = "Conditional Boxplot of Delomys spp. Body Mass by Sex and Species",
+        las = 2,
+        xlab= NULL,
+        ylab = "Body Mass (g)",
+        cex.axis = .5,
+        names = c("Female D. dorsalis", "Male D. dorsalis", "Female D. sublineatus", "Male D. sublineatus"))
+```
+
+## `Model Building and Diagnostics`
+Fit 5 linear models to predict body mass.
+```{r}
+require(dat_delomys)
+# Create a linear model to predict body length as a function of body mass
+fit1 = lm(body_length~body_mass, data = dat_delomys)
+
+# Create a linear model to predict body mass as a function of sex
+fit2 = lm(body_mass~sex, data = dat_delomys)
+
+# Create a linear model to predict body mass as a function of species
+fit3 = lm(body_mass~binomial, data = dat_delomys)
+
+# Create an additive linear model to predict body mass as a function of species AND sex
+fit4 = lm(body_mass~sex + binomial, data = dat_delomys)
+
+# Create a factorial linear model to predict body mass as a function of species AND sex
+fit5 = lm(body_mass~sex*binomial, data = dat_delomys)
+```
+
+Plot histograms of the residuals from each of the five models.
+```{r}
+# Create a histogram of the residuals from fit1
+hist(residuals(fit1),
+     main = "Histogram of Residuals from fit1",
+     xlab = "Residuals",)
+
+# Create a histogram of the residuals from fit2
+hist(residuals(fit2),
+     main = "Histogram of Residuals from fit2",
+     xlab = "Residuals",)
+
+# Create a histogram of the residuals from fit3
+hist(residuals(fit3),
+     main = "Histogram of Residuals from fit3",
+     xlab = "Residuals",)
+
+# Create a histogram of the residuals from fit4
+hist(residuals(fit4),
+     main = "Histogram of Residuals from fit4",
+     xlab = "Residuals",)
+
+# Create a histogram of the residuals from fit5
+hist(residuals(fit5),
+     main = "Histogram of Residuals from fit5",
+     xlab = "Residuals",)
+
+```
+Test the normality of the residuals from each of the 5 models.
+```{r}
+# Use a Shapiro test to determine normality of distribution of residuals from fit1
+shapiro.test(fit1$residuals)
+
+# Use a Shapiro test to determine normality of distribution of residuals from fit2
+shapiro.test(fit2$residuals)
+
+# Use a Shapiro test to determine normality of distribution of residuals from fit3
+shapiro.test(fit3$residuals)
+
+# Use a Shapiro test to determine normality of distribution of residuals from fit4
+shapiro.test(fit4$residuals)
+
+# Use a Shapiro test to determine normality of distribution of residuals from fit5
+shapiro.test(fit5$residuals)
+
+```
