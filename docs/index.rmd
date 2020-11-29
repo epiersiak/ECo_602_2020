@@ -11,12 +11,9 @@ output:
 knitr::opts_chunk$set(echo = TRUE)
 knitr::opts_chunk$set(warning = FALSE)
 knitr::opts_chunk$set(message = FALSE)
-knitr::opts_chunk$set(fig.width=10, fig.height=8) 
+knitr::opts_chunk$set(fig.width=7, fig.height=5) 
 options(knitr.duplicate.label = TRUE)
 ```
-
-Everything above this line is the header.
-
 
 <!-- The following text won't be displayed in your document.  It tells R how to make nicer looking buttons for your tabbed content. -->
 
@@ -35,20 +32,11 @@ Everything above this line is the header.
 }
 </style>
 
-
-Use this document as a template to build your final project.
-
-If you've already created the file index.Rmd in your docs folder, you can paste everything below the header into that document.
-
-If you don't yet have an index.Rmd file, save this document as index.Rmd in the docs folder of your main class folder.
-
-Edit this template to fill in your own content.
-
-
 # Introduction
 
-Type a brief introduction here.
+For the Final Project in ECo 602, we were tasked with creating an RMarkdown script that contains information on how to perform much of what we learned throughout the semester. This script goes through the processes of using basic functions in R, as well as showing how to perform numerical and graphical exploration, and has an example of data analysis using the delomys dataset.
 
+# Part 1: The Basics of R
 
 # Data Structure Functions {.tabset .tabset-pills}
 
@@ -271,6 +259,7 @@ plot(iris$Sepal.Length, iris$Petal.Length)
 
 ```
 
+
 You can use a variety of arguments to modify your plot and make it easier to read, including `col=`, `pch=`, `cex=`, `main=`, `xlab=`, `ylab=`, `xlim=`, and `ylim=`.
 
 ```{r}
@@ -475,6 +464,9 @@ read.csv('delomys.csv')
 # Part 2: Data Anaylsis {.tabset .tabset-pills}
 
 ## `Numerical Exploration`
+
+### Display Summary Statistics
+
 Use the summary function to see some summary statistics on body mass and body length from the delomys dataset.
 ```{r}
 # Read in the delomys dataset. First, the working directory must be set to a location where the file of interest exists.
@@ -486,7 +478,10 @@ summary(dat_delomys$body_length)
 
 # See the summary statistics from delomys$body_mass
 summary(dat_delomys$body_mass)
+```
 
+### Perform a Test of Normality
+``` {r}
 # Perform a Shapiro test to determine the normality of body length in the dat_delomys dataset
 shapiro.test(dat_delomys$body_length)
 
@@ -500,6 +495,7 @@ Both body length (p < 2.2e-16) and mass (p = 4.33e-05) for the delomys dataset a
 ## `Graphical Exploration`
 Use a variety of graphs to visually explore the data.
 
+### Scatterplot
 ```{r}
 # Create a scatterplot of delomys body mass by body length
 require(dat_delomys)
@@ -509,6 +505,11 @@ plot(dat_delomys$body_mass, dat_delomys$body_length,
      ylab = "Body Length (mm)")
 
 ```
+
+
+Delomys spp. body mass and length have a positively correlated relationship, meaning that as body mass increases, body length also increases. This relationship is generally linear with a slight curve, excluding outliers. 
+
+### Histograms
 ```{r}
 # Create a histogram of delomys body mass
 require(dat_delomys)
@@ -518,6 +519,10 @@ hist(dat_delomys$body_mass,
      ylab = "Frequency")
 
 ```
+
+
+The body mass histogram shows a normal distribution with a very small right skew. The shape of the histogram follows the shape of a normal curve. The normal shape of the histogram in combination with the p-value of less than 0.05 from the Shapiro test allows us to confidently assume that the body mass data is normally distributed.
+
 ```{r}
 # Create a histogram of delomys body length
 require(dat_delomys)
@@ -527,9 +532,13 @@ hist(dat_delomys$body_length,
      ylab = "Frequency")
 
 ```
+
+
+Delomys body length is mostly normally distributed. There is a tall peak centered around the 120 mm range, and a second, very small peak between 200 and 250. The very small peak does little to skew the data, but it cannot be ignored as a possible source of outliers. The normal shape of this histogram in combination with a p-value of less than 0.05 from the Shapiro test allows us to safely assume that the body length data is normally distributed.
+
+### Conditional Boxplots
 ```{r}
 # Create a conditional boxplot of body mass, conditioned on species
-View(dat_delomys)
 require(dat_delomys)
 boxplot(body_mass~binomial, data = dat_delomys,
         main = "Conditional Boxplot of Delomys spp. Body Mass by Species",
@@ -537,9 +546,12 @@ boxplot(body_mass~binomial, data = dat_delomys,
         xlab = "Species")
 
 ```
+
+
+With a visual assessment of this conditional boxplot, we can see that the mean weight of D. sublineatus is lower than the mean weight of D. dorsalis. We cannot make any statistical determinations with a visual assessment, but it can lead us to perform more statistical tests to see if the mean weight of D. sublineatus is truly lower than the mean weight of D. dorsalis. 
+
 ```{r}
 # Create a conditional boxplot of body mass, conditioned on sex
-View(dat_delomys)
 require(dat_delomys)
 boxplot(body_mass~sex, data = dat_delomys,
         main = "Conditional Boxplot of Delomys spp. Body Mass by Sex",
@@ -547,9 +559,12 @@ boxplot(body_mass~sex, data = dat_delomys,
         xlab = "Sex",
         names = c("Female", "Male"))
 ```
+
+
+The weight of male Delomys spp. organisms seems to be slightly higher than the females. Again, we cannot make any statistical inferences from a visual assessment, but we can move on to perform a t-test to compare the mean weights of male and female Delomys organisms.
+
 ```{r}
 # Create a conditional boxplot of body mass, conditioned on sex and species
-View(dat_delomys)
 require(dat_delomys)
 boxplot(body_mass~sex*binomial, data = dat_delomys, 
         main = "Conditional Boxplot of Delomys spp. Body Mass by Sex and Species",
@@ -560,7 +575,11 @@ boxplot(body_mass~sex*binomial, data = dat_delomys,
         names = c("Female D. dorsalis", "Male D. dorsalis", "Female D. sublineatus", "Male D. sublineatus"))
 ```
 
+
 ## `Model Building and Diagnostics`
+
+### Linear Models
+
 Fit 5 linear models to predict body mass.
 ```{r}
 require(dat_delomys)
@@ -580,49 +599,154 @@ fit4 = lm(body_mass~sex + binomial, data = dat_delomys)
 fit5 = lm(body_mass~sex*binomial, data = dat_delomys)
 ```
 
+### Histograms and Graphical Exploration
+
 Plot histograms of the residuals from each of the five models.
 ```{r}
-# Create a histogram of the residuals from fit1
+# Create a histogram of the residuals from the five fits
+
+# fit1
 hist(residuals(fit1),
      main = "Histogram of Residuals from fit1",
      xlab = "Residuals",)
 
-# Create a histogram of the residuals from fit2
+# fit2
 hist(residuals(fit2),
      main = "Histogram of Residuals from fit2",
      xlab = "Residuals",)
 
-# Create a histogram of the residuals from fit3
+# fit3
 hist(residuals(fit3),
      main = "Histogram of Residuals from fit3",
      xlab = "Residuals",)
 
-# Create a histogram of the residuals from fit4
+# fit4
 hist(residuals(fit4),
      main = "Histogram of Residuals from fit4",
      xlab = "Residuals",)
 
-# Create a histogram of the residuals from fit5
+# fit5
 hist(residuals(fit5),
      main = "Histogram of Residuals from fit5",
      xlab = "Residuals",)
 
 ```
+
+### Using the Shapiro Test
+
 Test the normality of the residuals from each of the 5 models.
 ```{r}
-# Use a Shapiro test to determine normality of distribution of residuals from fit1
+# Use a Shapiro test to determine normality of distribution of residuals from the five fits
+
+# fit1
 shapiro.test(fit1$residuals)
 
-# Use a Shapiro test to determine normality of distribution of residuals from fit2
+# fit2
 shapiro.test(fit2$residuals)
 
-# Use a Shapiro test to determine normality of distribution of residuals from fit3
+# fit3
 shapiro.test(fit3$residuals)
 
-# Use a Shapiro test to determine normality of distribution of residuals from fit4
+# fit4
 shapiro.test(fit4$residuals)
 
-# Use a Shapiro test to determine normality of distribution of residuals from fit5
+# fit5
 shapiro.test(fit5$residuals)
 
 ```
+Based on the numerical and graphical diagnostics of each model's residuals, we can conclude that every model has normally distributed residuals. Every Shapiro test that was performed resulted in a p-value of less than 0.05. The histogram of residuals from fit1 was fairly normal with some outliers that caused the graph to skew right. The rest of the models had very normally shaped histograms of the residuals. 
+
+Because the histogram for fit1 does not have a perfect bell curve like the other four models, the violations of normality assumption are more severe for the first model. However, they are not so severe that the first model fails the Shapiro test for normality.
+
+## `Model Interpretation`
+
+### Body Length
+```{r}
+# Print the model coefficient table for the relationship between body mass and body length
+knitr::kable(coef(summary(fit1)), digits = c(3))
+
+```
+The magnitude of the relationship between mass and length is for every 0.875 grams of weight increase, the length of the animal increases by 1.
+The expected body length of an animal that weighs 100g is (76.125 + 100(0.875)) or 163.
+625 mm.
+The expected body length of an animal that weighs 0g is (76.125 + 0(0.875)) or 76.125 mm.
+
+### Body Mass: Model Coefficients
+Print the model coeffcient tables for the second and third models:
+
+```{r}
+# Print the model coefficient table for the relationship between body mass and sex
+knitr::kable(coef(summary(fit2)), digits = c(3))
+
+```
+The base level for sex is female, weighing 42.711 grams.
+Males are heavier than females.
+
+```{r}
+# Print the model coefficient table for the relationship between body mass and species
+knitr::kable(coef(summary(fit3)), digits = c(3))
+
+```
+The base level for species (binomial) is D. dorsalis, weighing 46.752 grams.
+D. dorsalis weighs more than D. sublineatus.
+
+### Body Mass: ANOVA
+
+Print the ANOVA table for each of the body mass models:
+```{r}
+# body mass and length
+knitr::kable(anova(fit1), digits = c(3))
+
+```
+
+```{r}
+# body mass and sex
+knitr::kable(anova(fit2), digits = c(3))
+
+```
+
+```{r}
+# body mass and species
+knitr::kable(anova(fit3), digits = c(3))
+
+```
+
+```{r}
+# body mass and sex with species (binomial) additive
+knitr::kable(anova(fit4), digits = c(3))
+
+```
+
+```{r}
+# body mass and sex with species (binomial) factorial
+knitr::kable(anova(fit5), digits = c(3))
+
+```
+
+### Body Mass: ANOVA Analysis
+Sex and species on their own are significant predictors of body mass. In the additive ANOVA, they are significant predictors when they are separate, but when they are in a factorial ANOVA and combined, they are NOT significant predictors of body mass. 
+There is not a signficant interaction between sex and species.
+The significance of the main effects, measured by the p-value, does not change much between the models. It only changes in the interactive model, where it becomes insignificant.
+
+## `Model Comparison: Body Mass`
+
+### AIC
+
+Calculate the AIC for each of the body mass models.
+
+```{r}
+# fit2
+AIC(fit2)
+
+# fit3
+AIC(fit3)
+
+# fit4
+AIC(fit4)
+
+# fit5
+AIC(fit5)
+```
+
+The two models that have the lowest AIC are fit4 (the additive model with sex and species) and fit5 (the factorial model with sex and species).
+I would choose to continue my analysis with the additive model, because it is less complex to perform and understand, as it has a slightly lower AIC than the factorial model. The additive model has more precise results than the factorial model, which, in combination with the ease of creating and understanding, makes it the better model for my analysis.
